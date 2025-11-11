@@ -42,3 +42,4 @@ Swagger: http://localhost:3000/docs
 - Intégration: `tests/integration/auth.test.js` (login)
 
 ![Image de swagger](image.png)
+![Image de Pg admin ou on voit que j'ai crée un utilisateur dans la table users et que son mdp est haché](image-1.png)
