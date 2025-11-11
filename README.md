@@ -41,5 +41,20 @@ Swagger: http://localhost:3000/docs
 - Unitaires: `tests/unit/stockService.test.js` (règles stock IN/OUT)
 - Intégration: `tests/integration/auth.test.js` (login)
 
+Voici ce que j'obtiens en lancant la commande npm test :
+
+$ npm test
+
+> exercice2-back@1.0.0 test
+> jest
+
+ PASS  tests/unit/stockService.test.js
+ PASS  tests/integration/auth.test.js
+
+Test Suites: 2 passed, 2 total
+Tests:       5 passed, 5 total
+Snapshots:   0 total
+Time:        2.493 s
+
 ![Image de swagger](image.png)
 ![Image de Pg admin ou on voit que j'ai crée un utilisateur dans la table users et que son mdp est haché](image-1.png)
