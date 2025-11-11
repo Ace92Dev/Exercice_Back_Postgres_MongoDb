@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 const Users = require('../models/pgUserModel');
 
 function signToken(payload) {
@@ -7,40 +8,39 @@ function signToken(payload) {
   return jwt.sign(payload, secret, { expiresIn });
 }
 
-async function signup(req, res, next) {
-  const { name, email, password } = req.body || {};
-  if (!email || !password) {
-    return res.status(400).json({ success: false, message: 'email and password required' });
-  }
+async function register(req, res, next) {
+  const { username, password, role } = req.body || {};
   try {
-    const existing = await Users.findByEmail(email);
+    const existing = await Users.findByUsername(username);
     if (existing) {
-      return res.status(409).json({ success: false, message: 'email already in use' });
+      return res.status(409).json({ success: false, message: 'username already in use' });
     }
-    const user = await Users.create({ name, email, password });
-    const token = signToken({ userId: user.id, email: user.email });
-    return res.status(201).json({ success: true, data: { userId: user.id, email: user.email, token } });
+    const hashed = await bcrypt.hash(password, 10);
+    const user = await Users.create({ username, password: hashed, role: role || 'user' });
+    const token = signToken({ id: user.id, username: user.username, role: user.role });
+    return res.status(201).json({ success: true, data: { id: user.id, username: user.username, role: user.role, token } });
   } catch (err) {
     return next(err);
   }
 }
 
 async function login(req, res, next) {
-  const { email, password } = req.body || {};
-  if (!email || !password) {
-    return res.status(400).json({ success: false, message: 'email and password required' });
-  }
+  const { username, password } = req.body || {};
   try {
-    const user = await Users.findByEmail(email);
-    if (!user || user.password !== password) {
+    const user = await Users.findByUsername(username);
+    if (!user) {
       return res.status(401).json({ success: false, message: 'invalid credentials' });
     }
-    const token = signToken({ userId: user.id, email: user.email });
-    return res.status(200).json({ success: true, data: { userId: user.id, email: user.email, token } });
+    const ok = await bcrypt.compare(password, user.password);
+    if (!ok) {
+      return res.status(401).json({ success: false, message: 'invalid credentials' });
+    }
+    const token = signToken({ id: user.id, username: user.username, role: user.role });
+    return res.status(200).json({ success: true, data: { id: user.id, username: user.username, role: user.role, token } });
   } catch (err) {
     return next(err);
   }
 }
 
-module.exports = { signup, login };
+module.exports = { register, login };
 

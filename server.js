@@ -2,17 +2,11 @@ const dotenv = require('dotenv');
 dotenv.config();
 const app = require('./src/app');
 const { init } = require('./src/db/postgres');
-const { connect } = require('./src/db/mongo');
 
 const PORT = process.env.PORT || 3000;
 (async () => {
   try {
     await init();
-  } catch (e) {
-    console.error(e);
-  }
-  try {
-    await connect();
   } catch (e) {
     console.error(e);
   }
