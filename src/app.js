@@ -4,11 +4,14 @@ const pgTaskRoutes = require('./routes/pgTaskRoutes');
 const mongoTaskRoutes = require('./routes/mongoTaskRoutes');
 const authRoutes = require('./routes/authRoutes');
 const jwt = require('jsonwebtoken');
+const { graphqlHTTP } = require('express-graphql');
+const { schema } = require('./graphql/schema');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 app.use('/auth', authRoutes);
+app.use('/graphql', graphqlHTTP({ schema, graphiql: true }));
 app.use('/pg/tasks', pgTaskRoutes);
 app.use('/mongo/tasks', mongoTaskRoutes);
 app.use('/pg/todos', pgTaskRoutes);
