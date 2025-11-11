@@ -41,3 +41,4 @@ Swagger: http://localhost:3000/docs
 - Unitaires: `tests/unit/stockService.test.js` (règles stock IN/OUT)
 - Intégration: `tests/integration/auth.test.js` (login)
 
+![Image de swagger](image.png)
